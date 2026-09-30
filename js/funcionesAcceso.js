@@ -45,15 +45,14 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
   try {
     // Esperar a que se compruebe el token
     const sesion = await comprobarToken(token);
-    // Comprobar si el usuario quiere recordar su token para evitar iniciar sesión siempre
+
+    // Recordar el token (localStorage) o solo mientras la pestaña esté abierta (sessionStorage)
     const recordar = document.getElementById("check-recordar").checked;
+    const almacen = recordar ? localStorage : sessionStorage;
+    almacen.setItem("gestion-token", token);
+    almacen.setItem("gestion-sesion", JSON.stringify(sesion));
 
-    // Guardar en localStorage
-    const localStorage = recordar ? localStorage : sessionStorage;
-    localStorage.setItem("gestion-token", token);
-    localStorage.setItem("gestion-sesion", JSON.stringify(sesion));
-
-    // Si es admin redirigir a página de gestión con permisos de admin, y sino página de gestión normal
+    // Si es admin, a la página de admin; si no, a sus solicitudes
     location.href = sesion.rol === "admin" ? "admin.html" : "mis-solicitudes.html";
   } catch (err) {
     document.getElementById("login-error-texto").textContent = err.message;
