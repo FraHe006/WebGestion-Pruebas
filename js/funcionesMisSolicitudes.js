@@ -1,5 +1,5 @@
-const REPO_WEB = "https://github.com/FranzHelena006/AppData";
-const REPO_API = "https://api.github.com/repos/FranzHelena006/AppData";
+const REPO_WEB = "https://github.com/FraHe006/AppData";
+const REPO_API = "https://api.github.com/repos/FraHe006/AppData";
 const token = localStorage.getItem("gestion-token") || sessionStorage.getItem("gestion-token");
 
 
@@ -24,7 +24,7 @@ function nuevaSolicitud() {
 function salir() {
   localStorage.removeItem("gestion-token");
   sessionStorage.removeItem("gestion-token");
-  location.href = "index.html";
+  location.href = "../index.html";
 }
 
 // Botones

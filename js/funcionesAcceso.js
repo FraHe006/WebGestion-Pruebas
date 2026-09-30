@@ -1,4 +1,4 @@
-const ORG  = "FranzHelena006";   // Organización de GitHub donde está el repo privado con las solicitudes
+const ORG  = "FraHe006";   // Organización de GitHub donde está el repo privado con las solicitudes
 const REPO = "AppData";    // repo privado con las solicitudes
 
 // Comprueba el token: devuelve { usuario, avatar, rol } o lanza un Error
