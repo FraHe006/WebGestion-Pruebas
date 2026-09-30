@@ -53,7 +53,7 @@ document.getElementById("form-login").addEventListener("submit", async (e) => {
     almacen.setItem("gestion-sesion", JSON.stringify(sesion));
 
     // Si es admin, a la página de admin; si no, a sus solicitudes
-    location.href = sesion.rol === "admin" ? "admin.html" : "mis-solicitudes.html";
+    location.href = sesion.rol === "admin" ? "html/panelAdmin.html" : "html/misSolicitudes.html";
   } catch (err) {
     document.getElementById("login-error-texto").textContent = err.message;
     error.hidden = false;
