@@ -6,58 +6,78 @@
   <meta name="robots" content="noindex">
   <title>Administración</title>
   <link rel="stylesheet" href="../css/estilos.css">
+  <style>
+    [hidden] { display: none !important; }
+    .bloque { margin-bottom: 32px; }
+    .bloque h2 { margin: 0 0 14px; }
+    .estadisticas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+    .filtros { display: flex; flex-wrap: wrap; gap: 10px; }
+    hr { border: 0; border-top: 1px solid #ddd; margin: 0 0 28px; }
+  </style>
   <script src="../js/funcionesAdmin.js" defer></script>
 </head>
 <body>
   <main class="contenido contenido-estrecho">
 
-    <div class="cabecera-pagina">
+    <!-- Cabecera -->
+    <header class="cabecera-pagina bloque">
       <div>
         <h1>Administración</h1>
+        <p class="subtitulo" id="usuario-nombre"></p>
       </div>
-      <button id="btn-salir" class="boton secundario" type="button">Salir</button>
-    </div>
+      <button id="btn-salir" class="boton secundario salir" type="button">Salir</button>
+    </header>
 
-    <section class="estadisticas">
-      <div class="estadistica pendiente">
-        <div id="stat-pendientes" class="estadistica-valor">0</div>
-        <div class="estadistica-nombre">Pendientes</div>
+    <!-- Resumen y acciones del admin -->
+    <section class="bloque">
+      <h2>Solicitudes</h2>
+
+      <div class="estadisticas">
+        <div class="estadistica pendiente">
+          <div id="stat-pendientes" class="estadistica-valor">0</div>
+          <div class="estadistica-nombre">Pendientes</div>
+        </div>
+        <div class="estadistica aprobada">
+          <div id="stat-aprobadas" class="estadistica-valor">0</div>
+          <div class="estadistica-nombre">Aprobadas</div>
+        </div>
+        <div class="estadistica rechazada">
+          <div id="stat-rechazadas" class="estadistica-valor">0</div>
+          <div class="estadistica-nombre">Rechazadas</div>
+        </div>
       </div>
-      <div class="estadistica aprobada">
-        <div id="stat-aprobadas" class="estadistica-valor">0</div>
-        <div class="estadistica-nombre">Aprobadas</div>
-      </div>
-      <div class="estadistica rechazada">
-        <div id="stat-rechazadas" class="estadistica-valor">0</div>
-        <div class="estadistica-nombre">Rechazadas</div>
+
+      <div class="filtros">
+        <button id="btn-actualizar" class="boton secundario" type="button">Actualizar</button>
+        <button id="btn-descargar-aprobadas" class="boton" type="button">Descargar aprobadas (JSON)</button>
+        <button id="btn-descargar-todo" class="boton secundario" type="button">Copia completa (JSON)</button>
+        <a class="boton secundario" href="https://github.com/FraHe006/AppData/issues" target="_blank" rel="noopener">Revisar en GitHub</a>
       </div>
     </section>
 
-    <div class="filtros">
-      <button id="btn-actualizar" class="boton secundario" type="button">Actualizar</button>
-      <button id="btn-descargar-aprobadas" class="boton" type="button">Descargar aprobadas (JSON)</button>
-      <button id="btn-descargar-todo" class="boton secundario" type="button">Copia completa (JSON)</button>
-      <a class="boton secundario" href="https://github.com/FraHe006/AppData/issues" target="_blank" rel="noopener">Revisar en GitHub</a>
-    </div>
+    <hr>
 
-    <div class="cabecera-pagina">
-      <div>
-        <h1>Mis solicitudes</h1>
-        <p class="subtitulo" id="usuario-nombre"></p>
+    <!-- Las solicitudes propias del admin -->
+    <section class="bloque">
+      <div class="cabecera-pagina">
+        <div>
+          <h2>Mis solicitudes</h2>
+        </div>
+        <button id="btn-salir-2" class="boton secundario salir" type="button">Salir</button>
       </div>
-      <button id="btn-salir" class="boton secundario" type="button">Salir</button>
-    </div>
 
-    <p class="aviso" style="margin-bottom:18px">
-      Las solicitudes se crean y se editan en GitHub. Para editar una, ábrela y pulsa ··· → Edit.
-    </p>
+      <p class="aviso" style="margin-bottom:18px">
+        Las solicitudes se crean y se editan en GitHub. Para editar una, ábrela y pulsa ··· → Edit.
+      </p>
 
-    <div class="filtros">
-      <button id="btn-nueva" class="boton" type="button">+ Nueva solicitud</button>
-      <button id="btn-mis-github" class="boton secundario" type="button">Ver y editar mis solicitudes</button>
-      <!-- Solo lo ve el admin (lo muestra el JS) -->
-      <a id="enlace-admin" class="boton fantasma" href="panelAdmin.html" hidden>Administración</a>
-    </div>
+      <div class="filtros">
+        <button id="btn-nueva" class="boton" type="button">+ Nueva solicitud</button>
+        <button id="btn-mis-github" class="boton secundario" type="button">Ver y editar mis solicitudes</button>
+        <!-- Solo lo ve el admin (lo muestra el JS) -->
+        <a id="enlace-admin" class="boton fantasma" href="panelAdmin.html" hidden>Administración</a>
+      </div>
+    </section>
+
   </main>
 </body>
 </html>

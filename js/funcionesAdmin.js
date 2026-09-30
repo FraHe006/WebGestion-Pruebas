@@ -20,6 +20,12 @@ function nuevaSolicitud() {
   window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
 }
 
+function salir() {
+  localStorage.removeItem("gestion-token");
+  sessionStorage.removeItem("gestion-token");
+  location.href = "index.html";
+}
+
 // Descarga un archivo JSON con los datos que le pases
 function descargar(datos, nombreArchivo) {
   const enlace = document.createElement("a");
@@ -31,27 +37,28 @@ function descargar(datos, nombreArchivo) {
 // Contar 
 
 function esAprobada(i) {
-  return i.state === "open" && i.labels.some(l => l.name === "aprobada");
+  return i.labels.some(l => l.name === "aprobada");
 }
 
-function contarPendientes(issues) {
-  return issues.filter(i => i.state === "open" && !esAprobada(i)).length;
+function esRechazada(i) {
+  return i.state === "closed" && !esAprobada(i);
 }
 
-function contarAprobadas(issues) {
-  return issues.filter(esAprobada).length;
-}
-
-function contarRechazadas(issues) {
-  return issues.filter(i => i.state === "closed").length;
+function esPendiente(i) {
+  return i.state === "open" && !esAprobada(i);
 }
 
 // Descarga las solicitudes de GitHub y pone los totales
 async function contar() {
-  issues = await github(`${REPO_API}/issues?state=all&per_page=100`);
-  document.getElementById("stat-pendientes").textContent = contarPendientes(issues);
-  document.getElementById("stat-aprobadas").textContent = contarAprobadas(issues);
-  document.getElementById("stat-rechazadas").textContent = contarRechazadas(issues);
+  try {
+    const todo = await github(`${REPO_API}/issues?state=all&per_page=100`);
+    issues = todo.filter(i => !i.pull_request);
+    document.getElementById("stat-pendientes").textContent = issues.filter(esPendiente).length;
+    document.getElementById("stat-aprobadas").textContent = issues.filter(esAprobada).length;
+    document.getElementById("stat-rechazadas").textContent = issues.filter(esRechazada).length;
+  } catch (e) {
+    alert("No se pudieron cargar las solicitudes (" + e.message + ")");
+  }
 }
 
 // Deja cada solicitud solo con lo útil para el JSON
@@ -59,7 +66,18 @@ function simplificar(i) {
   return { id: i.number, titulo: i.title, autor: i.user.login, texto: i.body };
 }
 
+async function cargarUsuario() {
+  const usuario = await github("https://api.github.com/user");
+  document.getElementById("usuario-nombre").textContent = "Sesión iniciada como " + usuario.login;
+}
+
 // Botones 
+
+document.getElementById("btn-nueva").onclick = nuevaSolicitud;
+
+document.getElementById("btn-mis-github").onclick = verMisSolicitudes;
+
+document.querySelectorAll(".salir").forEach(b => b.onclick = salir);
 
 document.getElementById("btn-actualizar").onclick = contar;
 
@@ -69,7 +87,8 @@ document.getElementById("btn-descargar-aprobadas").onclick = () =>
 document.getElementById("btn-descargar-todo").onclick = () =>
   descargar(issues.map(simplificar), "copia-solicitudes.json");
 
-// ── Al abrir la página ───────────────────────────────────────
-
 if (!token) location.href = "index.html";
-else contar();
+else {
+  contar();
+  cargarUsuario().catch(() => {});
+}
