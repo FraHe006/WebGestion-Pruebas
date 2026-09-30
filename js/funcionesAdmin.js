@@ -63,7 +63,7 @@ async function subirJSON(datos, nombreArchivo) {
     body: JSON.stringify({
       message: `Actualizar ${nombreArchivo}`,
       content: contenido,
-      sha: await obtenerSHA(url)
+      sha: (await github(url)).sha
     })
   });
 
