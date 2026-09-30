@@ -1,5 +1,8 @@
 const REPO_API = "https://api.github.com/repos/FraHe006/AppData";
 const REPO_WEB = "https://github.com/FraHe006/AppData";
+
+const WEB = { owner: "FraHe006", repo: "WebGestion-Pruebas", path: "actividades.json" };
+
 const token = localStorage.getItem("gestion-token") || sessionStorage.getItem("gestion-token");
 
 let issues = [];   // aquí se guardan las solicitudes al cargarlas
@@ -45,6 +48,26 @@ function descargar(datos, nombreArchivo) {
   enlace.href = URL.createObjectURL(new Blob([JSON.stringify(datos, null, 2)]));
   enlace.download = nombreArchivo;
   enlace.click();
+}
+
+async function subirJSON(datos, nombreArchivo) {
+  const url = `https://api.github.com/repos/${WEB.owner}/${WEB.repo}/contents/${WEB.path}`;
+  const contenido = btoa(JSON.stringify(datos, null, 2));
+
+  const respuesta = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: `Actualizar ${nombreArchivo}`,
+      content: contenido,
+      sha: await obtenerSHA(url)
+    })
+  });
+
+  if (!respuesta.ok) throw new Error("Error al subir el archivo");
 }
 
 // Dashboard de estadísticas de solicitudes
@@ -132,6 +155,15 @@ document.getElementById("btn-descargar-aprobadas").onclick = () =>
 
 document.getElementById("btn-descargar-todo").onclick = () =>
   descargar(issues.map(pasarAJson), "copia-solicitudes.json");
+
+document.getElementById("btn-subir-actividades").onclick = async () => {
+  try {
+    await subirJSON(issues.filter(esAprobada).map(pasarAJson), "actividades.json");
+    alert("Actividades aprobadas subidas correctamente.");
+  } catch (e) {
+    alert("Error al subir las actividades: " + e.message);
+  } 
+}
 
 if (!token) location.href = "index.html";
 else {
