@@ -4,51 +4,25 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex">
-  <title>Administración · Gestión de la afiliación</title>
-  <link rel="stylesheet" href="../css/estilos.css">
+  <title>Administración</title>
+  <link rel="stylesheet" href="gestion.css">
   <script src="../js/funcionesAdmin.js" defer></script>
 </head>
-<!-- Si quien entra NO es admin, redirígelo a mis-solicitudes.html -->
-<body class="rol-admin">
-
-  <header class="barra">
-    <div class="barra-interior">
-      <a class="marca" href="mis-solicitudes.html">
-        <span class="marca-logo" aria-hidden="true">A</span>
-        <span>Gestión</span>
-      </a>
-      <nav class="menu" aria-label="Secciones">
-        <a href="https://github.com/FraHe006/AppData/issues/new?template=solicitud.yml"
-           target="_blank" rel="noopener">Nueva solicitud ↗</a>
-        <a href="misSolicitudes.html">Mis solicitudes</a>
-      </nav>
-      <div class="usuario">
-        <span id="usuario-avatar" class="avatar" aria-hidden="true"></span>
-        <span class="usuario-datos">
-          <span id="usuario-nombre" class="usuario-nombre"></span>
-          <span id="usuario-rol" class="usuario-rol"></span>
-        </span>
-        <button id="btn-salir" class="boton fantasma pequeno" type="button">Salir</button>
-      </div>
-    </div>
-  </header>
-
-  <main class="contenido">
+<body>
+  <main class="contenido contenido-estrecho">
 
     <div class="cabecera-pagina">
       <div>
         <h1>Administración</h1>
-        <p class="subtitulo">Revisa las solicitudes en GitHub y descarga los datos.</p>
+        <p class="subtitulo"><span id="usuario-nombre"></span> · <span id="usuario-rol"></span></p>
       </div>
-      <a class="boton secundario" href="https://github.com/FraHe006/AppData/issues?q=is%3Aissue+is%3Aopen+label%3Apendiente"
-         target="_blank" rel="noopener">Ver pendientes en GitHub ↗</a>
+      <button id="btn-salir" class="boton secundario" type="button">Salir</button>
     </div>
 
-    <!-- Resumen -->
-    <section class="estadisticas" aria-label="Resumen">
+    <section class="estadisticas">
       <div class="estadistica pendiente">
         <div id="stat-pendientes" class="estadistica-valor">0</div>
-        <div class="estadistica-nombre">Pendientes de revisar</div>
+        <div class="estadistica-nombre">Pendientes</div>
       </div>
       <div class="estadistica aprobada">
         <div id="stat-aprobadas" class="estadistica-valor">0</div>
@@ -60,100 +34,14 @@
       </div>
     </section>
 
-    <!-- Descargas -->
-    <section class="publicacion">
-      <p class="publicacion-texto">
-        <strong>Descargar datos</strong><br>
-        <span>Las aprobadas son las que se muestran en la web pública.</span>
-      </p>
-      <div class="filtros">
-        <!-- Mientras preparas el archivo: disabled + aria-busy="true" -->
-        <button id="btn-descargar-aprobadas" class="boton" type="button">Descargar aprobadas (JSON)</button>
-        <button id="btn-descargar-todo" class="boton secundario" type="button">Copia completa (JSON)</button>
-      </div>
-    </section>
-
-    <!-- Cómo moderar en GitHub -->
-    <details class="aviso ayuda-token" style="display:block;margin:0 0 20px">
-      <summary>¿Cómo apruebo o rechazo una solicitud?</summary>
-      <ol>
-        <li>Pulsa <strong>Revisar en GitHub</strong> en la solicitud.</li>
-        <li><strong>Aprobar:</strong> a la derecha, en <strong>Labels</strong>, quita <code>pendiente</code> y marca <code>aprobada</code>.</li>
-        <li><strong>Rechazar:</strong> escribe el motivo en un comentario y pulsa <strong>Close with comment</strong>.</li>
-        <li><strong>Editar:</strong> menú <strong>···</strong> del mensaje → <strong>Edit</strong>.</li>
-        <li>Vuelve aquí y pulsa <strong>Actualizar</strong> (o recarga la página).</li>
-      </ol>
-    </details>
-
-    <!-- Pestañas: marca la activa con aria-selected="true" y muestra su panel quitando "hidden" -->
-    <div class="pestanas" role="tablist" aria-label="Solicitudes">
-      <button class="pestana" role="tab" id="tab-pendientes" aria-controls="panel-pendientes" aria-selected="true" data-estado="pendiente">
-        Pendientes <span class="contador">0</span>
-      </button>
-      <button class="pestana" role="tab" id="tab-aprobadas" aria-controls="panel-aprobadas" aria-selected="false" data-estado="aprobada">
-        Aprobadas <span class="contador">0</span>
-      </button>
-      <button class="pestana" role="tab" id="tab-rechazadas" aria-controls="panel-rechazadas" aria-selected="false" data-estado="rechazada">
-        Rechazadas <span class="contador">0</span>
-      </button>
+    <div class="filtros">
+      <button id="btn-actualizar" class="boton secundario" type="button">Actualizar</button>
+      <button id="btn-descargar-aprobadas" class="boton" type="button">Descargar aprobadas (JSON)</button>
+      <button id="btn-descargar-todo" class="boton secundario" type="button">Copia completa (JSON)</button>
+      <a class="boton secundario" href="https://github.com/FraHe006/AppData/issues" target="_blank" rel="noopener">Revisar en GitHub</a>
+      <a class="boton fantasma" href="misSolicitudes.html">Mis solicitudes</a>
     </div>
 
-    <div class="barra-herramientas">
-      <button id="btn-actualizar" class="boton secundario pequeno" type="button">↻ Actualizar</button>
-    </div>
-
-    <!-- Cargando / error -->
-    <div id="admin-cargando" class="cargando" hidden><div class="girando" aria-label="Cargando"></div></div>
-    <div id="admin-error" class="aviso error" role="alert" hidden>
-      <span id="admin-error-texto">No se han podido cargar las solicitudes.</span>
-    </div>
-
-    <!-- ===== Panel: Pendientes ===== -->
-    <section id="panel-pendientes" class="lista" role="tabpanel" aria-labelledby="tab-pendientes">
-      <!-- Aquí se añaden las solicitudes desde tu JS -->
-    </section>
-
-    <!-- ===== Panel: Aprobadas ===== -->
-    <section id="panel-aprobadas" class="lista" role="tabpanel" aria-labelledby="tab-aprobadas" hidden>
-      <!-- Aquí se añaden las solicitudes desde tu JS -->
-    </section>
-
-    <!-- ===== Panel: Rechazadas ===== -->
-    <section id="panel-rechazadas" class="lista" role="tabpanel" aria-labelledby="tab-rechazadas" hidden>
-      <!-- Aquí se añaden las solicitudes desde tu JS -->
-    </section>
-
-    <!-- Vacío: muéstralo en la pestaña que no tenga solicitudes -->
-    <div id="admin-vacio" class="vacio" hidden>
-      <h3>Nada pendiente</h3>
-      <p>Has revisado todas las solicitudes.</p>
-    </div>
-    <!-- Plantilla de una solicitud: no se muestra. Clónala desde tu JS para cada issue:
-         const nodo = document.getElementById("plantilla-solicitud").content.cloneNode(true); -->
-    <template id="plantilla-solicitud">
-      <article class="solicitud" data-id="" data-estado="">
-        <div>
-          <div class="solicitud-cabecera">
-            <span class="chip js-estado"></span>          <!-- añade la clase pendiente / aprobada / rechazada -->
-            <span class="chip js-categoria"></span>
-            <span class="solicitud-id js-numero"></span>
-          </div>
-          <h3 class="js-titulo"></h3>
-          <ul class="solicitud-datos">
-            <li><strong>Fecha:</strong> <span class="js-fecha"></span></li>
-            <li><strong>Hora:</strong> <span class="js-hora"></span></li>
-            <li><strong>Lugar:</strong> <span class="js-lugar"></span></li>
-          </ul>
-          <p class="solicitud-descripcion js-descripcion"></p>
-          <p class="solicitud-autor">Enviada por <strong class="js-autor"></strong> · <span class="js-fecha-envio"></span></p>
-        </div>
-        <div class="solicitud-acciones">
-          <a class="boton secundario pequeno js-enlace" href="#" target="_blank" rel="noopener">Revisar en GitHub ↗</a>
-        </div>
-      </article>
-    </template>
   </main>
-
-  <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

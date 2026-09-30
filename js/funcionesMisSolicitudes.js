@@ -1,41 +1,11 @@
-// Mis solicitudes. Necesita js/sesion.js cargado antes.
+const REPO_WEB = "https://github.com/FraHe006/AppData";
 
-let misSolicitudes = [];
-let filtroActivo = "todas";
-
-async function cargar(usuario) {
-  try {
-    misSolicitudes = await leerSolicitudes("&creator=" + usuario);
-    pintar();
-  } catch (e) {
-    document.getElementById("mis-error-texto").textContent = e.message;
-    document.getElementById("mis-error").hidden = false;
-  }
+// Abre en GitHub la lista de solicitudes creadas por quien ha iniciado sesión, para verlas y editarlas
+function verMisSolicitudes() {
+  window.open(`${REPO_WEB}/issues?q=is%3Aissue+author%3A%40me`, "_blank");
 }
 
-function pintar() {
-  const cuantas = estado => misSolicitudes.filter(s => s.estado === estado).length;
-  document.getElementById("cuenta-todas").textContent = misSolicitudes.length;
-  document.getElementById("cuenta-pendiente").textContent = cuantas("pendiente");
-  document.getElementById("cuenta-aprobada").textContent = cuantas("aprobada");
-  document.getElementById("cuenta-rechazada").textContent = cuantas("rechazada");
-
-  document.querySelectorAll(".filtro").forEach(b =>
-    b.setAttribute("aria-pressed", b.dataset.estado === filtroActivo)
-  );
-
-  const lista = filtroActivo === "todas"
-    ? misSolicitudes
-    : misSolicitudes.filter(s => s.estado === filtroActivo);
-
-  document.getElementById("mis-lista").replaceChildren(...lista.map(tarjeta));
-  document.getElementById("mis-vacio").hidden = misSolicitudes.length > 0;
+// Abre el formulario de GitHub para crear una solicitud nueva
+function nuevaSolicitud() {
+  window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
 }
-
-// Cambiar de filtro
-document.querySelectorAll(".filtro").forEach(b => {
-  b.onclick = () => { filtroActivo = b.dataset.estado; pintar(); };
-});
-
-// Arranque: cualquier miembro
-entrar(false).then(usuario => { if (usuario) cargar(usuario); });

@@ -1,49 +1,75 @@
-let solicitudes = [];
-let pestanaActiva = "pendiente";
+const REPO_API = "https://api.github.com/repos/FraHe006/AppData";
+const REPO_WEB = "https://github.com/FraHe006/AppData";
+const token = localStorage.getItem("gestion-token") || sessionStorage.getItem("gestion-token");
 
-const estados = { pendiente: "pendientes", aprobada: "aprobadas", rechazada: "rechazadas" };
+let issues = [];   // aquí se guardan las solicitudes al cargarlas
 
-async function cargar() {
-  try {
-    solicitudes = await leerSolicitudes();
-    pintar();
-  } catch (e) {
-    document.getElementById("admin-error-texto").textContent = e.message;
-    document.getElementById("admin-error").hidden = false;
-  }
+// Pide algo a GitHub con el token
+async function github(url) {
+  const respuesta = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!respuesta.ok) throw new Error("Error " + respuesta.status);
+  return respuesta.json();
 }
 
-function pintar() {
-  for (const estado in estados) {
-    const lista = solicitudes.filter(s => s.estado === estado);
-    const nombre = estados[estado];
-
-    document.getElementById("stat-" + nombre).textContent = lista.length;
-
-    const pestana = document.getElementById("tab-" + nombre);
-    pestana.setAttribute("aria-selected", estado === pestanaActiva);
-    pestana.querySelector(".contador").textContent = lista.length;
-
-    const panel = document.getElementById("panel-" + nombre);
-    panel.replaceChildren(...lista.map(tarjeta));
-    panel.hidden = estado !== pestanaActiva;
-  }
-  const hayAlguna = solicitudes.some(s => s.estado === pestanaActiva);
-  document.getElementById("admin-vacio").hidden = hayAlguna;
+// Abre en GitHub la lista de solicitudes creadas por quien ha iniciado sesión, para verlas y editarlas
+function verMisSolicitudes() {
+  window.open(`${REPO_WEB}/issues?q=is%3Aissue+author%3A%40me`, "_blank");
 }
 
-// Cambiar de pestaña
-document.querySelectorAll(".pestana").forEach(p => {
-  p.onclick = () => { pestanaActiva = p.dataset.estado; pintar(); };
-});
+function nuevaSolicitud() {
+  window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
+}
 
-document.getElementById("btn-actualizar").onclick = cargar;
+// Descarga un archivo JSON con los datos que le pases
+function descargar(datos, nombreArchivo) {
+  const enlace = document.createElement("a");
+  enlace.href = URL.createObjectURL(new Blob([JSON.stringify(datos, null, 2)]));
+  enlace.download = nombreArchivo;
+  enlace.click();
+}
+
+// Contar 
+
+function esAprobada(i) {
+  return i.state === "open" && i.labels.some(l => l.name === "aprobada");
+}
+
+function contarPendientes(issues) {
+  return issues.filter(i => i.state === "open" && !esAprobada(i)).length;
+}
+
+function contarAprobadas(issues) {
+  return issues.filter(esAprobada).length;
+}
+
+function contarRechazadas(issues) {
+  return issues.filter(i => i.state === "closed").length;
+}
+
+// Descarga las solicitudes de GitHub y pone los totales
+async function contar() {
+  issues = await github(`${REPO_API}/issues?state=all&per_page=100`);
+  document.getElementById("stat-pendientes").textContent = contarPendientes(issues);
+  document.getElementById("stat-aprobadas").textContent = contarAprobadas(issues);
+  document.getElementById("stat-rechazadas").textContent = contarRechazadas(issues);
+}
+
+// Deja cada solicitud solo con lo útil para el JSON
+function simplificar(i) {
+  return { id: i.number, titulo: i.title, autor: i.user.login, texto: i.body };
+}
+
+// Botones 
+
+document.getElementById("btn-actualizar").onclick = contar;
 
 document.getElementById("btn-descargar-aprobadas").onclick = () =>
-  descargar(solicitudes.filter(s => s.estado === "aprobada"), "actividades.json");
+  descargar(issues.filter(esAprobada).map(simplificar), "actividades.json");
 
 document.getElementById("btn-descargar-todo").onclick = () =>
-  descargar(solicitudes, "copia-solicitudes.json");
+  descargar(issues.map(simplificar), "copia-solicitudes.json");
 
-// Arranque: solo admins
-entrar(true).then(usuario => { if (usuario) cargar(); });
+// ── Al abrir la página ───────────────────────────────────────
+
+if (!token) location.href = "index.html";
+else contar();
