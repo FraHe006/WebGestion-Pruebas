@@ -22,12 +22,19 @@ async function comprobarToken(token) {
   if (!respuestaRepo.ok) throw new Error(`GitHub no responde (error ${respuestaRepo.status}). Inténtalo más tarde.`);
   const repo = await respuestaRepo.json();
 
-  // Asignar rol según sus permisos en el repo
+  const respuestaOrg = await fetch(`https://api.github.com/orgs/${ORG}/memberships/${usuario.login}`, { headers: cabeceras });
+  let esOwner = false;
+  if (respuestaOrg.ok) {
+    const membresia = await respuestaOrg.json();
+    esOwner = membresia.role === "admin";
+  }
+
+  // Asignar rol: owner de la org, o admin/maintain en el repo
   const permisos = repo.permissions || {};
   return {
     usuario: usuario.login,
     avatar: usuario.avatar_url,
-    rol: permisos.admin || permisos.maintain ? "admin" : "miembro",
+    rol: esOwner || permisos.admin || permisos.maintain ? "admin" : "miembro",
   };
 }
 
