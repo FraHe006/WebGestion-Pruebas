@@ -11,6 +11,16 @@ async function github(url) {
   return respuesta.json();
 }
 
+function camposDelFormulario(texto) {
+  const campos = {};
+  (texto || "").split(/^### /m).slice(1).forEach(bloque => {
+    const [titulo, ...resto] = bloque.split("\n");
+    const valor = resto.join("\n").trim();
+    campos[titulo.trim()] = valor === "_No response_" ? "" : valor;
+  });
+  return campos;
+}
+
 // Abre en GitHub la lista de solicitudes creadas por quien ha iniciado sesión, para verlas y editarlas
 function verMisSolicitudes() {
   window.open(`${REPO_WEB}/issues?q=is%3Aissue+author%3A%40me`, "_blank");
@@ -64,12 +74,42 @@ async function contar() {
 
 // Deja cada solicitud solo con lo útil para el JSON
 function simplificar(i) {
-  return { id: i.number, titulo: i.title, autor: i.user.login, texto: i.body };
+  return {
+    id: i.number,
+    titulo: i.title,
+    autor: i.user.login,
+    estado: i.state,
+    etiquetas: i.labels.map(l => l.name),
+    asignados: i.assignees.map(a => a.login),
+    comentarios: i.comments,
+    creada: i.created_at,
+    actualizada: i.updated_at,
+    cerrada: i.closed_at,
+    enlace: i.html_url,
+    datos: camposDelFormulario(i.body)
+  };
 }
 
 // Actividades
 const escapar = t => (t || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const tarjeta = i => `<li><details><summary>#${i.number} ${escapar(i.title)} — ${escapar(i.user.login)}</summary><pre>${escapar(i.body)}</pre><a href="${i.html_url}" target="_blank" rel="noopener">Abrir en GitHub</a></details></li>`;
+
+// Convierte cualquier valor en texto legible
+const texto = v => Array.isArray(v) ? v.join(", ") : String(v ?? "");
+
+// Pinta un objeto como filas de tabla
+const filas = obj => Object.entries(obj)
+  .map(([k, v]) => `<tr><th>${escapar(k)}</th><td>${escapar(texto(v))}</td></tr>`)
+  .join("");
+
+const tarjeta = i => {
+  const { datos, ...general } = simplificar(i);
+  return `<li><details>
+    <summary>#${i.number} ${escapar(i.title)} — ${escapar(i.user.login)}</summary>
+    <table>${filas(general)}${filas(datos)}</table>
+    <a href="${i.html_url}" target="_blank" rel="noopener">Abrir en GitHub</a>
+  </details></li>`;
+};
+
 const pintarActividades = () => document.getElementById("lista-actividades").innerHTML = issues.filter(esAprobada).map(tarjeta).join("") || "<li>No hay actividades aprobadas.</li>";
 
 async function cargarUsuario() {
