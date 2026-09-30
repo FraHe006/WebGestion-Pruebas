@@ -66,6 +66,11 @@ function simplificar(i) {
   return { id: i.number, titulo: i.title, autor: i.user.login, texto: i.body };
 }
 
+// Actividades
+const escapar = t => (t || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const tarjeta = i => `<li><details><summary>#${i.number} ${escapar(i.title)} — ${escapar(i.user.login)}</summary><pre>${escapar(i.body)}</pre><a href="${i.html_url}" target="_blank" rel="noopener">Abrir en GitHub</a></details></li>`;
+const pintarActividades = () => document.getElementById("lista-actividades").innerHTML = issues.filter(esAprobada).map(tarjeta).join("") || "<li>No hay actividades aprobadas.</li>";
+
 async function cargarUsuario() {
   const usuario = await github("https://api.github.com/user");
   document.getElementById("usuario-nombre").textContent = "Sesión iniciada como " + usuario.login;
@@ -90,5 +95,6 @@ document.getElementById("btn-descargar-todo").onclick = () =>
 if (!token) location.href = "index.html";
 else {
   contar();
+  pintarActividades();
   cargarUsuario().catch(() => {});
 }
