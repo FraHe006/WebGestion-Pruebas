@@ -41,11 +41,11 @@ function esAprobada(i) {
 }
 
 function esRechazada(i) {
-  return i.state === "closed" && !esAprobada(i);
+  return i.labels.some(l => l.name === "rechazada");
 }
 
 function esPendiente(i) {
-  return i.state === "open" && !esAprobada(i);
+  return i.labels.some(l => l.name === "pendiente");
 }
 
 // Descarga las solicitudes de GitHub y pone los totales
