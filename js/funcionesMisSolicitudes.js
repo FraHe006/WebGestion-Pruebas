@@ -1,8 +1,9 @@
 const REPO_WEB = "https://github.com/FraHe006/AppData";
-
 const REPO_API = "https://api.github.com/repos/FraHe006/AppData";
 const token = localStorage.getItem("gestion-token") || sessionStorage.getItem("gestion-token");
 
+
+// Pide algo a GitHub con el token del usuario que ha iniciado sesión
 async function github(url) {
   const respuesta = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   if (!respuesta.ok) throw new Error("Error " + respuesta.status);
@@ -19,21 +20,14 @@ function nuevaSolicitud() {
   window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
 }
 
+// Cierra la sesión y vuelve a la página de inicio
 function salir() {
   localStorage.removeItem("gestion-token");
   sessionStorage.removeItem("gestion-token");
   location.href = "index.html";
 }
 
-async function cargarUsuario() {
-  const usuario = await github("https://api.github.com/user");
-  document.getElementById("usuario-nombre").textContent = "Sesión iniciada como " + usuario.login;
-  const repo = await github(REPO_API);
-  if (repo.permissions && repo.permissions.admin) {
-    document.getElementById("enlace-admin").hidden = false;
-  }
-}
-
+// Botones
 document.getElementById("btn-nueva").onclick = nuevaSolicitud;
 document.getElementById("btn-mis-github").onclick = verMisSolicitudes;
 document.getElementById("btn-salir").onclick = salir;
