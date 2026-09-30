@@ -56,6 +56,7 @@ async function contar() {
     document.getElementById("stat-pendientes").textContent = issues.filter(esPendiente).length;
     document.getElementById("stat-aprobadas").textContent = issues.filter(esAprobada).length;
     document.getElementById("stat-rechazadas").textContent = issues.filter(esRechazada).length;
+    pintarActividades();
   } catch (e) {
     alert("No se pudieron cargar las solicitudes (" + e.message + ")");
   }
@@ -95,6 +96,5 @@ document.getElementById("btn-descargar-todo").onclick = () =>
 if (!token) location.href = "index.html";
 else {
   contar();
-  pintarActividades();
   cargarUsuario().catch(() => {});
 }
