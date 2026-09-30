@@ -103,7 +103,7 @@ const filas = obj => Object.entries(obj)
 
 const tarjeta = i => {
   const { datos, ...general } = simplificar(i);
-  return `<li><details>
+  return `<li><details open>
     <summary>#${i.number} ${escapar(i.title)} — ${escapar(i.user.login)}</summary>
     <table>${filas(general)}${filas(datos)}</table>
     <a href="${i.html_url}" target="_blank" rel="noopener">Abrir en GitHub</a>
