@@ -17,7 +17,7 @@ function verMisSolicitudes() {
 }
 
 function nuevaSolicitud() {
-  window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
+  window.open(`${REPO_WEB}/issues/new/choose`, "_blank");
 }
 
 function salir() {
