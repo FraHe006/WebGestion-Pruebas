@@ -14,7 +14,6 @@
     <div class="cabecera-pagina">
       <div>
         <h1>Administración</h1>
-        <p class="subtitulo"><span id="usuario-nombre"></span> · <span id="usuario-rol"></span></p>
       </div>
       <button id="btn-salir" class="boton secundario" type="button">Salir</button>
     </div>
@@ -39,9 +38,26 @@
       <button id="btn-descargar-aprobadas" class="boton" type="button">Descargar aprobadas (JSON)</button>
       <button id="btn-descargar-todo" class="boton secundario" type="button">Copia completa (JSON)</button>
       <a class="boton secundario" href="https://github.com/FraHe006/AppData/issues" target="_blank" rel="noopener">Revisar en GitHub</a>
-      <a class="boton fantasma" href="misSolicitudes.html">Mis solicitudes</a>
     </div>
 
+    <div class="cabecera-pagina">
+      <div>
+        <h1>Mis solicitudes</h1>
+        <p class="subtitulo" id="usuario-nombre"></p>
+      </div>
+      <button id="btn-salir" class="boton secundario" type="button">Salir</button>
+    </div>
+
+    <p class="aviso" style="margin-bottom:18px">
+      Las solicitudes se crean y se editan en GitHub. Para editar una, ábrela y pulsa ··· → Edit.
+    </p>
+
+    <div class="filtros">
+      <button id="btn-nueva" class="boton" type="button">+ Nueva solicitud</button>
+      <button id="btn-mis-github" class="boton secundario" type="button">Ver y editar mis solicitudes</button>
+      <!-- Solo lo ve el admin (lo muestra el JS) -->
+      <a id="enlace-admin" class="boton fantasma" href="panelAdmin.html" hidden>Administración</a>
+    </div>
   </main>
 </body>
 </html>
