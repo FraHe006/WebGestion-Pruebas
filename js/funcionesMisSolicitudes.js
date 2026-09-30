@@ -1,5 +1,5 @@
-const REPO_WEB = "https://github.com/FraHe006/AppData";
-const REPO_API = "https://api.github.com/repos/FraHe006/AppData";
+const REPO_WEB = "https://github.com/FranzHelena006/AppData";
+const REPO_API = "https://api.github.com/repos/FranzHelena006/AppData";
 const token = localStorage.getItem("gestion-token") || sessionStorage.getItem("gestion-token");
 
 
@@ -17,7 +17,7 @@ function verMisSolicitudes() {
 
 // Abre el formulario de GitHub para crear una solicitud nueva
 function nuevaSolicitud() {
-  window.open(`${REPO_WEB}/issues/new?template=solicitud.yml`, "_blank");
+  window.open(`${REPO_WEB}/issues/new/choose`, "_blank");
 }
 
 // Cierra la sesión y vuelve a la página de inicio
