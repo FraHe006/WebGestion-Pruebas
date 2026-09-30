@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Nueva solicitud · Gestión de la afiliación</title>
+  <link rel="stylesheet" href="../css/estilos.css">
+</head>
+<!-- Cambia la clase a "rol-miembro" para miembros: se oculta todo lo que lleve data-solo-admin -->
+<body class="rol-admin">
+
+  <header class="barra">
+    <div class="barra-interior">
+      <a class="marca" href="mis-solicitudes.html">
+        <span class="marca-logo" aria-hidden="true">A</span>
+        <span>Gestión</span>
+      </a>
+      <nav class="menu" aria-label="Secciones">
+        <a href="nueva-solicitud.html" aria-current="page">Nueva solicitud</a>
+        <a href="mis-solicitudes.html">Mis solicitudes</a>
+        <a href="admin.html" data-solo-admin>Administración</a>
+      </nav>
+      <div class="usuario">
+        <!-- Puedes poner dentro <img src="https://github.com/USUARIO.png" alt=""> -->
+        <span id="usuario-avatar" class="avatar" aria-hidden="true">H</span>
+        <span class="usuario-datos">
+          <span id="usuario-nombre" class="usuario-nombre">@hefrafol</span>
+          <span id="usuario-rol" class="usuario-rol">Administradora</span>
+        </span>
+        <button id="btn-salir" class="boton fantasma pequeno" type="button">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenido contenido-estrecho">
+
+    <div class="cabecera-pagina">
+      <div>
+        <!-- Para editar una solicitud puedes reutilizar esta página (p. ej. nueva-solicitud.html?id=12)
+             y cambiar el título a "Editar solicitud" y el botón a "Guardar cambios" -->
+        <h1 id="titulo-formulario">Nueva solicitud</h1>
+        <p class="subtitulo">Propón una actividad. Se publicará en la web cuando la revise la administración.</p>
+      </div>
+    </div>
+
+    <!-- Mensaje de éxito: quita "hidden" tras enviar -->
+    <div id="envio-ok" class="aviso ok" role="status" hidden style="margin-bottom:16px">
+      <span class="aviso-icono" aria-hidden="true">✅</span>
+      <span>Solicitud enviada. Puedes seguir su estado en <a href="mis-solicitudes.html">Mis solicitudes</a>.</span>
+    </div>
+
+    <!-- Mensaje de error: quita "hidden" si falla el envío -->
+    <div id="envio-error" class="aviso error" role="alert" hidden style="margin-bottom:16px">
+      <span class="aviso-icono" aria-hidden="true">⚠️</span>
+      <span id="envio-error-texto">No se ha podido enviar. Inténtalo de nuevo.</span>
+    </div>
+
+    <form id="form-solicitud" class="tarjeta" novalidate>
+      <div class="tarjeta-cuerpo">
+
+        <div class="campo">
+          <label class="etiqueta" for="campo-titulo">Título<span class="obligatorio" aria-hidden="true">*</span></label>
+          <input id="campo-titulo" name="titulo" type="text" maxlength="120" required
+                 placeholder="Ej.: Taller de serigrafía" aria-describedby="error-titulo">
+          <!-- Error de campo: quita "hidden" y pon aria-invalid="true" en el input -->
+          <span id="error-titulo" class="error-campo" hidden>El título es obligatorio.</span>
+        </div>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label class="etiqueta" for="campo-fecha">Fecha<span class="obligatorio" aria-hidden="true">*</span></label>
+            <input id="campo-fecha" name="fecha" type="date" required>
+          </div>
+          <div class="campo">
+            <label class="etiqueta" for="campo-hora-inicio">Hora de inicio</label>
+            <input id="campo-hora-inicio" name="hora_inicio" type="time">
+          </div>
+          <div class="campo">
+            <label class="etiqueta" for="campo-hora-fin">Hora de fin</label>
+            <input id="campo-hora-fin" name="hora_fin" type="time">
+          </div>
+        </div>
+
+        <div class="fila-campos">
+          <div class="campo">
+            <label class="etiqueta" for="campo-lugar">Lugar<span class="obligatorio" aria-hidden="true">*</span></label>
+            <input id="campo-lugar" name="lugar" type="text" required placeholder="Ej.: Local de la calle Mayor, 12">
+          </div>
+          <div class="campo">
+            <label class="etiqueta" for="campo-categoria">Categoría</label>
+            <select id="campo-categoria" name="categoria">
+              <option value="">Elige una…</option>
+              <option>Asamblea</option>
+              <option>Taller</option>
+              <option>Charla</option>
+              <option>Movilización</option>
+              <option>Otra</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta" for="campo-descripcion">Descripción<span class="obligatorio" aria-hidden="true">*</span></label>
+          <textarea id="campo-descripcion" name="descripcion" required
+                    placeholder="Qué se va a hacer, a quién va dirigida, qué hay que traer…"></textarea>
+        </div>
+
+        <div class="campo">
+          <label class="etiqueta" for="campo-contacto">Contacto</label>
+          <input id="campo-contacto" name="contacto" type="text" placeholder="Correo o teléfono (opcional)">
+          <span class="ayuda">Se mostrará públicamente junto a la actividad.</span>
+        </div>
+
+      </div>
+
+      <div class="tarjeta-pie">
+        <a class="boton secundario" href="mis-solicitudes.html">Cancelar</a>
+        <!-- Mientras envías: disabled + aria-busy="true" y texto "Enviando…" -->
+        <button id="btn-enviar" class="boton" type="submit">Enviar solicitud</button>
+      </div>
+    </form>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

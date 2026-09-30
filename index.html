@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Acceso · Gestión de la afiliación</title>
+  <script src="js/funcionesAcceso.js" defer></script>
+  <link rel="stylesheet" href="gestion.css">
+</head>
+<body>
+  <main class="pagina-login">
+    <div class="login">
+
+      <header class="login-cabecera">
+        <div class="marca-logo" aria-hidden="true">A</div>
+        <h1>Gestión de la afiliación</h1>
+        <p>Acceso solo para miembros</p>
+      </header>
+
+      <form id="form-login" class="tarjeta" novalidate>
+        <div class="tarjeta-cuerpo">
+
+          <!-- Mensaje de error: quita "hidden" y cambia el texto cuando falle el acceso -->
+          <div id="login-error" class="aviso error" role="alert" hidden>
+            <span id="login-error-texto">No tienes acceso. Pide que te añadan a la afiliación en GitHub.</span>
+          </div>
+
+          <div class="campo">
+            <label class="etiqueta" for="input-token">Tu token de acceso</label>
+            <div class="con-boton">
+              <input id="input-token" name="token" type="password" autocomplete="off"
+                     spellcheck="false" autocapitalize="off" placeholder="github_pat_…" required>
+              <!-- Cambia el type del input entre "password" y "text" -->
+              <button id="btn-mostrar-token" class="boton fantasma pequeno" type="button" aria-pressed="false">Mostrar</button>
+            </div>
+            <span class="ayuda">Tu llave personal. Se envía solo a GitHub.</span>
+          </div>
+
+          <div class="login-opciones">
+            <label class="casilla">
+              <input id="check-recordar" type="checkbox" checked>
+              Recordarme en este dispositivo
+            </label>
+            <span class="ayuda">Desmárcalo si usas un ordenador compartido.</span>
+          </div>
+
+          <!-- Mientras compruebas el token: disabled + aria-busy="true" y texto "Comprobando…" -->
+          <button id="btn-entrar" class="boton ancho" type="submit">Entrar</button>
+
+          <details class="ayuda-token">
+            <summary>¿Cómo consigo mi token?</summary>
+            <ol>
+              <li>En GitHub, pulsa tu foto → <strong>Settings</strong> → <strong>Developer settings</strong>.</li>
+              <li><strong>Personal access tokens</strong> → <strong>Fine-grained tokens</strong> → <strong>Generate new token</strong>.</li>
+              <li>En <strong>Resource owner</strong> elige la organización de la afiliación.</li>
+              <li><strong>Repository access</strong>: <em>Only select repositories</em> → <code>actividades</code>.</li>
+              <li><strong>Permissions</strong> → <strong>Issues</strong>: <em>Read and write</em>.</li>
+              <li>Pulsa <strong>Generate token</strong>, cópialo y pégalo aquí.</li>
+            </ol>
+          </details>
+
+        </div>
+      </form>
+
+      <p class="login-pie">¿No eres miembro? <a href="../">Volver a la web</a></p>
+    </div>
+  </main>
+</body>
+</html>
